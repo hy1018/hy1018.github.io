@@ -9,9 +9,8 @@
     
     <meta name="author" content="姜宏宇">
     
-    <meta name="description" content="iOS页面间传值方式通过以下方法可以实现iOS页面间传值：1.委托delegate方式;2.通知notification方式;3.block方式;
-4.UserDefault或者文件方式;5.单例模式方式;6.通过设置属性，实现页面间传值
-在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总">
+    <meta name="description" content="iOS页面间传值方式通过以下方法可以实现iOS页面间传值：1.委托delegate方式;2.通知notification方式;3.block方式;4.UserDefault或者文件方式;5.单例模式方式;6.通过设置属性，实现页面间传值
+在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结">
     
     
     
@@ -75,7 +74,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-05-20T09:33:39.000Z" itemprop="datePublished">2014-05-20</time>
-    更新日期:<time datetime="2015-10-15T11:00:31.000Z" itemprop="dateModified">2015-10-15</time>
+    更新日期:<time datetime="2015-10-15T12:59:33.000Z" itemprop="dateModified">2015-10-15</time>
     
   </p>
 </header>
@@ -87,33 +86,19 @@
 		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">iOS页面间传值方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过以下方法可以实现iOS页面间传值："><span class="toc-number">1.0.1.</span> <span class="toc-text">通过以下方法可以实现iOS页面间传值：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">1.0.2.2.</span> <span class="toc-text">方法：</span></a></li></ol></li></ol></li></ol></li></ol>
 		</div>
 		
-		<h1 id="iOS页面间传值方式">iOS页面间传值方式</h1><h3 id="通过以下方法可以实现iOS页面间传值：">通过以下方法可以实现iOS页面间传值：</h3><p><code>1.委托delegate方式</code>;<code>2.通知notification方式</code>;<code>3.block方式</code>;</p>
-<p><code>4.UserDefault或者文件方式</code>;<code>5.单例模式方式</code>;<code>6.通过设置属性，实现页面间传值</code></p>
+		<h1 id="iOS页面间传值方式">iOS页面间传值方式</h1><h3 id="通过以下方法可以实现iOS页面间传值：">通过以下方法可以实现iOS页面间传值：</h3><p><code>1.委托delegate方式</code>;<code>2.通知notification方式</code>;<code>3.block方式</code>;<code>4.UserDefault或者文件方式</code>;<code>5.单例模式方式</code>;<code>6.通过设置属性，实现页面间传值</code></p>
 <h3 id="在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</h3><h4 id="情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</h4><h4 id="方法：">方法：</h4><p>在B页面的控制器中，编写对应的属性，在A页面跳转到B页面的地方，给B的属性赋值即可</p>
 <pre><code><span class="comment">// SecondViewController.h</span>
 
-
-
-<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSInteger</span> flag; <span class="comment">//当前系统标示（0：其他传值方式； </span>
-
-<span class="number">1</span>：block传值方式）
+<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSInteger</span> flag; <span class="comment">//当前系统标示（0：其他传值方式; 1：block传值方式）</span>
 </code></pre><p>在A页面的视图控制器中</p>
 <pre><code><span class="comment">// RootViewController.m</span>
 
-
-
 - (IBAction) <span class="string">showSecondView:</span> (id)sender {
-
-     SecondViewController *second = [[SecondViewController alloc] 
-<span class="label">
-       initWithNibName:</span>@<span class="string">'SecondViewController'</span><span class="string">bundle:</span>nil];
-
-      second.delegate = self;
-
-      second.flag = <span class="number">0</span>;
-
+     SecondViewController *second = [[SecondViewController alloc] <span class="string">initWithNibName:</span>@<span class="string">'SecondViewController'</span><span class="string">bundle:</span>nil];
+        second.delegate = self;
+        second.flag = <span class="number">0</span>;
  [self <span class="string">presentViewController:</span>second <span class="string">animated:</span>YES <span class="string">completion:</span>nil];
-
 }
 </code></pre><p>####情况2：A页面跳转到B页面，B页面再跳转回A页面</p>
 <p>####主流方法：</p>
@@ -121,186 +106,105 @@
 <p><img src="/Users/jianghongyu/Desktop/blog/页面传值图片/屏幕快照 2015-10-11 下午9.54.01.png" alt="alt text">设置协议及方法</p>
 <pre><code><span class="comment">// SecondViewController.h</span>
 
-
-
 <span class="class"><span class="keyword">@protocol</span> <span class="title">secondViewDelegate</span></span>
 
-
-
 - (<span class="keyword">void</span>)showName: (<span class="built_in">NSString</span> *)nameString;
-
-
 
 <span class="keyword">@end</span>
 </code></pre><p>设置代理（为防止循环引用，此处采用了weak）</p>
 <pre><code><span class="comment">// SecondViewController.h</span>
 
-
-
 <span class="variable">@interface</span>  <span class="attribute">SecondViewController </span>: UIViewController
 
-
-
 <span class="variable">@property</span> (nonatomic, weak) id&lt;secondViewDelegate&gt; delegate;
-
-
-
 <span class="variable">@property</span> (nonatomic, copy) ablock block;
-
-
 
 <span class="variable">@end</span>
 </code></pre><p>调用</p>
 <pre><code><span class="comment">// SecondViewController.m</span>
 
-
-
 <span class="tag">-</span> (IBAction) <span class="tag">delegateMethod</span>: (id)<span class="tag">sender</span> {
-
     <span class="tag">if</span> ([self notEmpty]) {
-
        <span class="attr_selector">[self.delegate showName:self.nameTextField.text]</span>;
-
        <span class="attr_selector">[self dismissViewControllerAnimated: YES completion:nil]</span>;
-
     }<span class="tag">else</span>{
-
        <span class="attr_selector">[self showAlert]</span>;
-
     }
-
 }
 </code></pre><p>显示</p>
 <pre><code><span class="comment">// RootViewController.m</span>
 
-
-
 - (<span class="keyword">void</span>)showName: (<span class="built_in">NSString</span> *)nameString {
-
      <span class="keyword">self</span><span class="variable">.nameLabel</span><span class="variable">.text</span> = nameString;
-
 }
 </code></pre><p>最重要也是最容易忽略的，就是一定要设置delegate的指向。</p>
 <p>(2) 通过通知(notification)的方式实现页面间的传值</p>
 <p>在B页面的控制器中发送通知：</p>
 <pre><code><span class="comment">// SecondViewController.m</span>
 
-
-
 - (IBAction)<span class="string">notificationMethod:</span> (id)sender {
-
      <span class="keyword">if</span> ([self notEmpty]) {
-
        [[NSNotificationCenter defaultCenter] <span class="string">postNotificationName:</span>
-
  @<span class="string">'ChangeNameNotification'</span> <span class="string">userInfo:</span>
-
  @{@<span class="string">'name'</span>:self.nameTextField.text}];
-
     [self <span class="string">dismissViewControllerAnimated:</span>YES <span class="string">completion:</span>nil];
-
    }<span class="keyword">else</span>{
-
        [self showAlert];
-
    }
-
 }
 </code></pre><p>在A页面控制器中，注册通知：</p>
 <pre><code><span class="comment">// RootViewController.m  </span>
 
-
-
 - (<span class="typename">void</span>)viewDidLoad
-
 {
-
    [<span class="keyword">super</span> viewDidLoad];
 
    <span class="comment">// Do any additional setup after loading the view from its nib.</span>
-
    [[NSNotificationCenter defaultCenter] <span class="string">addObserver:</span>self 
-<span class="label">
-   selector:</span><span class="annotation">@selector</span>(<span class="string">ChangeNameNotification:</span>) 
-<span class="label">
-   name:</span>@<span class="string">'ChangeNameNotification'</span> <span class="string">object:</span>nil];    
-
+<span class="label">   selector:</span><span class="annotation">@selector</span>(<span class="string">ChangeNameNotification:</span>) 
+<span class="label">   name:</span>@<span class="string">'ChangeNameNotification'</span> <span class="string">object:</span>nil];    
 }
 </code></pre><p>当我们不使用时，要记得删掉通知：</p>
 <pre><code><span class="comment">// RootViewController.m </span>
 
-
-
 <span class="tag">-</span> (void)<span class="tag">dealloc</span>{
-
      <span class="attr_selector">[[NSNotificationCenter defaultCenter]</span> <span class="tag">removeObserver</span><span class="pseudo">:self</span>];
-
 }
 </code></pre><p>调用，显示：</p>
 <pre><code><span class="comment">// RootViewController.m</span>
 
-
-
 -(<span class="typename">void</span>)<span class="string">ChangeNameNotification:</span>(NSNotification*)notification{
-
    NSDictionary *nameDictionary = [notification userInfo];
-
    self.nameLabel.text = [nameDictionary <span class="string">objectForKey:</span>@<span class="string">'name'</span>];
-
 }
 </code></pre><p>(3) block方式实现</p>
 <p>分析：</p>
 <p>在B视图控制器中，定义一个block，参数为字符串</p>
 <pre><code><span class="comment">// SecondViewController.h</span>
 
-
-
 <span class="keyword">typedef</span> <span class="keyword">void</span> (^ablock)(<span class="built_in">NSString</span> *str);
 
-
-
-
-
 <span class="comment">// SecondViewController.h</span>
-
-
 
 <span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) ablock block;
 </code></pre><p>在B视图控制器中，当输入名字，点击对应的确定按钮后</p>
 <pre><code>- (<span class="keyword">IBAction</span>)blockMethod: (<span class="keyword">id</span>)sender {
-
     <span class="keyword">if</span> ([<span class="keyword">self</span> notEmpty]) {
-
       <span class="keyword">if</span> (<span class="keyword">self</span><span class="variable">.block</span>) {
-
          <span class="keyword">self</span><span class="variable">.block</span>(<span class="keyword">self</span><span class="variable">.nameTextField</span><span class="variable">.text</span>);
-
          [<span class="keyword">self</span> dismissViewControllerAnimated:<span class="literal">YES</span> completion:<span class="literal">nil</span>];
-
       }
-
     }<span class="keyword">else</span>{
-
        [<span class="keyword">self</span> showAlert];
-
     }
-
 }
 </code></pre><p>在A视图显示，回调block</p>
-<pre><code>- (IBAction)showSecondWithBlock:(id)sender {
-
-    SecondViewController *<span class="built_in">second</span> = [[SecondViewController alloc] 
-
-       initWithNibName:@<span class="string">'SecondViewController'</span>bundle:nil];
-
-     [self presentViewController:<span class="built_in">second</span> animated:YES completion:nil];
-
-     <span class="built_in">second</span>.block = ^(NSString *<span class="built_in">str</span>){
-
-        self.nameLabel.<span class="built_in">text</span> = <span class="built_in">str</span>;
-
+<pre><code>- (IBAction)<span class="string">showSecondWithBlock:</span>(id)sender {
+    SecondViewController *second = [[SecondViewController alloc] <span class="string">initWithNibName:</span>@<span class="string">'SecondViewController'</span><span class="string">bundle:</span>nil];
+     [self <span class="string">presentViewController:</span>second <span class="string">animated:</span>YES <span class="string">completion:</span>nil];
+     second.block = ^(NSString *str){
+        self.nameLabel.text = str;
      };
-
 }
 </code></pre><p>再给大家分享一篇关于block的文章<a href="http://blog.csdn.net/fengsh998/article/details/38090205" target="_blank" rel="external">http://blog.csdn.net/fengsh998/article/details/38090205</a></p>
 <p>在学习的过程中，还看到了以下几种方案：</p>
@@ -309,150 +213,85 @@
 <pre><code><span class="comment">//通过文件或者UserDefault方式存值(感觉不太适合此类传值，如果要用文件或者UserDefault方式存值的话，可以考虑此方法)</span>
 
 - (IBAction)<span class="string">userDefaultMethod:</span>(id)sender {
-
      <span class="keyword">if</span> ([self notEmpty]) {
-
         [[NSUserDefaults standardUserDefaults] <span class="string">setObject:</span>self.nameTextField.text <span class="string">forKey:</span>@<span class="string">'myNameText'</span>];
-
         [self <span class="string">dismissViewControllerAnimated:</span>YES <span class="string">completion:</span>nil];
-
       }<span class="keyword">else</span>{
-
           [self showAlert];
-
       }
-
  }
 </code></pre><p>在A视图控制器显示</p>
 <pre><code>-(void)viewDidAppear:(BOOL)animated{
-
     <span class="comment">[super viewDidAppear:animated]</span>;
-
     //如果想测试通过UserDefault方式传值或者通过单例方式传值，取消以下注释即可
-
 /* 
-
     if (<span class="comment">[<span class="comment">[<span class="comment">[NSUserDefaults standardUserDefaults]</span> objectForKey:@'myNameText']</span> length]</span> != 0) {
-
        self.nameLabel.text = <span class="comment">[<span class="comment">[NSUserDefaults standardUserDefaults]</span> objectForKey:@'myNameText']</span>;
-
        <span class="comment">[<span class="comment">[NSUserDefaults standardUserDefaults]</span> setObject:@'' forKey:@'myNameText']</span>;
-
     }  
-
     DataSource *dataSource = <span class="comment">[DataSource sharedDataSource]</span>;
-
     if (<span class="comment">[dataSource.myName length]</span> != 0) {
-
         self.nameLabel.text = dataSource.myName;
-
         dataSource.myName = @'';
-
     }
-
 */
-
 }
 </code></pre><p>(3) 通过一个单例的class来传递</p>
 <p> B视图控制器</p>
 <pre><code><span class="comment">//通过单例方式传值(感觉不太适合此类传值，如果要用单例方式传值的话，可以考虑此方式)</span>
-
 - (<span class="keyword">IBAction</span>)singletonMethod:(<span class="keyword">id</span>)sender {
-
      <span class="keyword">if</span> ([<span class="keyword">self</span> notEmpty]) {
-
          DataSource *dataSource = [DataSource sharedDataSource];
-
          dataSource<span class="variable">.myName</span> = <span class="keyword">self</span><span class="variable">.nameTextField</span><span class="variable">.text</span>;
-
          [<span class="keyword">self</span> dismissViewControllerAnimated:<span class="literal">YES</span> completion:<span class="literal">nil</span>];
-
      }<span class="keyword">else</span>{
-
         [<span class="keyword">self</span> showAlert];
-
      }
-
 }
 </code></pre><p> A视图控制器显示</p>
 <pre><code>-(void)<span class="symbol">viewDidAppear:</span>(<span class="constant">BOOL</span>)animated{
-
    [<span class="keyword">super</span> <span class="symbol">viewDidAppear:</span>animated];
-
    <span class="regexp">//</span>如果想测试通过<span class="constant">UserDefault</span>方式传值或者通过单例方式传值，取消以下注释即可
-
 /*
-
    <span class="keyword">if</span> ([[[<span class="constant">NSUserDefaults</span> standardUserDefaults] <span class="symbol">objectForKey:</span>@<span class="string">'myNameText'</span>] length] != <span class="number">0</span>) {
-
        <span class="keyword">self</span>.nameLabel.text = [[<span class="constant">NSUserDefaults</span> standardUserDefaults] <span class="symbol">objectForKey:</span>@<span class="string">'myNameText'</span>];
-
        [[<span class="constant">NSUserDefaults</span> standardUserDefaults] <span class="symbol">setObject:</span>@<span class="string">''</span> <span class="symbol">forKey:</span>@<span class="string">'myNameText'</span>];
-
    }
-
    <span class="constant">DataSource</span> *dataSource = [<span class="constant">DataSource</span> sharedDataSource];
-
    <span class="keyword">if</span> ([dataSource.myName length] != <span class="number">0</span>) {
-
        <span class="keyword">self</span>.nameLabel.text = dataSource.myName;
-
        dataSource.myName = @<span class="string">''</span>;
-
    }
-
 /*
-
 }
-
 <span class="variable">@end</span>
 </code></pre><p>这里面用到了单例模式，编写了DataSource这个类，存放数据</p>
 <pre><code><span class="comment">// DataSource.h</span>
-
+<span class="comment">//</span>
 <span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span>
-
-
 
 <span class="class"><span class="keyword">@interface</span> <span class="title">DataSource</span> : <span class="title">NSObject</span></span>
 
-
-
 <span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *myName;
 
-
-
 + (DataSource*)sharedDataSource;
-
-
 
 <span class="keyword">@end</span>
 </code></pre><p>在DataSource.m中</p>
 <pre><code><span class="comment">//  DataSource.m</span>
-
 <span class="comment">//</span>
-
 <span class="preprocessor">#import 'DataSource.h'</span>
-
-
 
 <span class="class"><span class="keyword">@implementation</span> <span class="title">DataSource</span></span>
 
 + (DataSource *)sharedDataSource{
-
      <span class="keyword">static</span> DataSource *dataSource = <span class="literal">nil</span>;
-
      <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> once;
-
      <span class="built_in">dispatch_once</span>(&amp;once, ^{
-
           dataSource = [DataSource new];
-
      });
-
      <span class="keyword">return</span> dataSource;
-
 }    
-
 <span class="keyword">@end</span>
 </code></pre><p>希望这篇文章对大家学习页面传值会有帮助，如果有不对的地方望大家指正！</p>
   
