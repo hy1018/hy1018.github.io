@@ -74,7 +74,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-05-20T09:33:39.000Z" itemprop="datePublished">2014-05-20</time>
-    更新日期:<time datetime="2015-10-15T12:59:33.000Z" itemprop="dateModified">2015-10-15</time>
+    更新日期:<time datetime="2015-10-15T13:28:00.000Z" itemprop="dateModified">2015-10-15</time>
     
   </p>
 </header>
@@ -83,26 +83,15 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">iOS页面间传值方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过以下方法可以实现iOS页面间传值："><span class="toc-number">1.0.1.</span> <span class="toc-text">通过以下方法可以实现iOS页面间传值：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">1.0.2.2.</span> <span class="toc-text">方法：</span></a></li></ol></li></ol></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">iOS页面间传值方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过以下方法可以实现iOS页面间传值："><span class="toc-number">1.0.1.</span> <span class="toc-text">通过以下方法可以实现iOS页面间传值：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">1.0.2.2.</span> <span class="toc-text">方法：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#情况2：A页面跳转到B页面，B页面再跳转回A页面"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">情况2：A页面跳转到B页面，B页面再跳转回A页面</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#主流方法："><span class="toc-number">1.0.2.4.</span> <span class="toc-text">主流方法：</span></a></li></ol></li></ol></li></ol></li></ol>
 		</div>
 		
-		<h1 id="iOS页面间传值方式">iOS页面间传值方式</h1><h3 id="通过以下方法可以实现iOS页面间传值：">通过以下方法可以实现iOS页面间传值：</h3><p><code>1.委托delegate方式</code>;<code>2.通知notification方式</code>;<code>3.block方式</code>;<code>4.UserDefault或者文件方式</code>;<code>5.单例模式方式</code>;<code>6.通过设置属性，实现页面间传值</code></p>
+		<h1 id="iOS页面间传值方式">iOS页面间传值方式</h1><h3 id="通过以下方法可以实现iOS页面间传值：">通过以下方法可以实现iOS页面间传值：</h3><p><code>1.委托delegate方式</code>;<code>2.通知notification方式</code>;<code>3.block方式</code>;<br><code>4.UserDefault或者文件方式</code>;<code>5.单例模式方式</code>;<code>6.通过设置属性，实现页面间传值</code></p>
 <h3 id="在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</h3><h4 id="情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</h4><h4 id="方法：">方法：</h4><p>在B页面的控制器中，编写对应的属性，在A页面跳转到B页面的地方，给B的属性赋值即可</p>
-<pre><code><span class="comment">// SecondViewController.h</span>
-
-<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSInteger</span> flag; <span class="comment">//当前系统标示（0：其他传值方式; 1：block传值方式）</span>
-</code></pre><p>在A页面的视图控制器中</p>
-<pre><code><span class="comment">// RootViewController.m</span>
-
-- (IBAction) <span class="string">showSecondView:</span> (id)sender {
-     SecondViewController *second = [[SecondViewController alloc] <span class="string">initWithNibName:</span>@<span class="string">'SecondViewController'</span><span class="string">bundle:</span>nil];
-        second.delegate = self;
-        second.flag = <span class="number">0</span>;
- [self <span class="string">presentViewController:</span>second <span class="string">animated:</span>YES <span class="string">completion:</span>nil];
-}
-</code></pre><p>####情况2：A页面跳转到B页面，B页面再跳转回A页面</p>
-<p>####主流方法：</p>
-<p>(1) 通过委托delegate的方式实现</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SecondViewController.h</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">@property</span> (<span class="keyword">nonatomic</span>) <span class="built_in">NSInteger</span> flag; <span class="comment">//当前系统标示（0：其他传值方式; 1：block传值方式）</span></span><br></pre></td></tr></table></figure>
+<p>在A页面的视图控制器中</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RootViewController.m</span></span><br><span class="line"></span><br><span class="line">- (IBAction) <span class="string">showSecondView:</span> (id)sender &#123;</span><br><span class="line">    SecondViewController *second = [[SecondViewController alloc] <span class="string">initWithNibName:</span>@<span class="string">'SecondViewController'</span><span class="string">bundle:</span>nil];</span><br><span class="line">     second.delegate = self;</span><br><span class="line">         second.flag = <span class="number">0</span>;</span><br><span class="line">    [self <span class="string">presentViewController:</span>second <span class="string">animated:</span>YES <span class="string">completion:</span>nil];</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="情况2：A页面跳转到B页面，B页面再跳转回A页面">情况2：A页面跳转到B页面，B页面再跳转回A页面</h4><h4 id="主流方法：">主流方法：</h4><p>(1) 通过委托delegate的方式实现</p>
 <p><img src="/Users/jianghongyu/Desktop/blog/页面传值图片/屏幕快照 2015-10-11 下午9.54.01.png" alt="alt text">设置协议及方法</p>
 <pre><code><span class="comment">// SecondViewController.h</span>
 
@@ -329,7 +318,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">iOS页面间传值方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过以下方法可以实现iOS页面间传值："><span class="toc-number">1.0.1.</span> <span class="toc-text">通过以下方法可以实现iOS页面间传值：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">1.0.2.2.</span> <span class="toc-text">方法：</span></a></li></ol></li></ol></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">iOS页面间传值方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过以下方法可以实现iOS页面间传值："><span class="toc-number">1.0.1.</span> <span class="toc-text">通过以下方法可以实现iOS页面间传值：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">1.0.2.2.</span> <span class="toc-text">方法：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#情况2：A页面跳转到B页面，B页面再跳转回A页面"><span class="toc-number">1.0.2.3.</span> <span class="toc-text">情况2：A页面跳转到B页面，B页面再跳转回A页面</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#主流方法："><span class="toc-number">1.0.2.4.</span> <span class="toc-text">主流方法：</span></a></li></ol></li></ol></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
