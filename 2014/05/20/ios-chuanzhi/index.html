@@ -9,10 +9,9 @@
     
     <meta name="author" content="姜宏宇">
     
-    <meta name="description" content="IOS页面间传值方式###通过以下方法可以实现iOS页面间传值：
-1.委托delegate方式;2.通知notification方式;3.block方式;
+    <meta name="description" content="iOS页面间传值方式通过以下方法可以实现iOS页面间传值：1.委托delegate方式;2.通知notification方式;3.block方式;
 4.UserDefault或者文件方式;5.单例模式方式;6.通过设置属性，实现页面间传值
-###在iOS开发中，我们经常会遇到页面间跳转传值的">
+在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总">
     
     
     
@@ -76,7 +75,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-05-20T09:33:39.000Z" itemprop="datePublished">2014-05-20</time>
-    更新日期:<time datetime="2015-10-15T10:09:40.000Z" itemprop="dateModified">2015-10-15</time>
+    更新日期:<time datetime="2015-10-15T11:00:31.000Z" itemprop="dateModified">2015-10-15</time>
     
   </p>
 </header>
@@ -85,16 +84,12 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">IOS页面间传值方式</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">iOS页面间传值方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过以下方法可以实现iOS页面间传值："><span class="toc-number">1.0.1.</span> <span class="toc-text">通过以下方法可以实现iOS页面间传值：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">1.0.2.2.</span> <span class="toc-text">方法：</span></a></li></ol></li></ol></li></ol></li></ol>
 		</div>
 		
-		<h1 id="IOS页面间传值方式">IOS页面间传值方式</h1><p>###通过以下方法可以实现iOS页面间传值：</p>
-<p><code>1.委托delegate方式</code>;<code>2.通知notification方式</code>;<code>3.block方式</code>;</p>
+		<h1 id="iOS页面间传值方式">iOS页面间传值方式</h1><h3 id="通过以下方法可以实现iOS页面间传值：">通过以下方法可以实现iOS页面间传值：</h3><p><code>1.委托delegate方式</code>;<code>2.通知notification方式</code>;<code>3.block方式</code>;</p>
 <p><code>4.UserDefault或者文件方式</code>;<code>5.单例模式方式</code>;<code>6.通过设置属性，实现页面间传值</code></p>
-<p>###在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</p>
-<p>####情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</p>
-<p>####方法：</p>
-<p>在B页面的控制器中，编写对应的属性，在A页面跳转到B页面的地方，给B的属性赋值即可</p>
+<h3 id="在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</h3><h4 id="情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</h4><h4 id="方法：">方法：</h4><p>在B页面的控制器中，编写对应的属性，在A页面跳转到B页面的地方，给B的属性赋值即可</p>
 <pre><code><span class="comment">// SecondViewController.h</span>
 
 
@@ -495,7 +490,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">IOS页面间传值方式</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#iOS页面间传值方式"><span class="toc-number">1.</span> <span class="toc-text">iOS页面间传值方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过以下方法可以实现iOS页面间传值："><span class="toc-number">1.0.1.</span> <span class="toc-text">通过以下方法可以实现iOS页面间传值：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下："><span class="toc-number">1.0.2.</span> <span class="toc-text">在iOS开发中，我们经常会遇到页面间跳转传值的问题，现归纳总结如下：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">情况1：A页面跳转到B页面，将值从A页面传到B页面（属性传值）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法："><span class="toc-number">1.0.2.2.</span> <span class="toc-text">方法：</span></a></li></ol></li></ol></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
