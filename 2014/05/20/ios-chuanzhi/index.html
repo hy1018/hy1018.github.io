@@ -74,7 +74,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-05-20T09:33:39.000Z" itemprop="datePublished">2014-05-20</time>
-    更新日期:<time datetime="2015-10-15T13:57:10.000Z" itemprop="dateModified">2015-10-15</time>
+    更新日期:<time datetime="2015-10-15T14:03:10.000Z" itemprop="dateModified">2015-10-15</time>
     
   </p>
 </header>
@@ -93,12 +93,21 @@
 <p>  @property (nonatomic) NSInteger flag; //当前系统标示<br>（0：其他传值方式; 1：block传值方式）</p>
 </blockquote>
 <p>在A页面的视图控制器中</p>
-<blockquote>
-<p>   // RootViewController.m</p>
-<p>   - (IBAction) showSecondView: (id)sender {<br>         SecondViewController *second =<br>[[SecondViewController alloc]<br>initWithNibName:@’SecondViewController’<br>bundle:nil];<br>    second.delegate = self;<br>        second.flag = 0;</p>
-<p>[self presentViewController:second animated:YES<br>completion:nil];</p>
-<p>}</p>
-</blockquote>
+<pre><code class="objectivec">&gt;    // RootViewController.m
+
+&gt;    \- (IBAction) showSecondView: (id)sender {
+&gt;          SecondViewController *second = 
+&gt; [[SecondViewController alloc] 
+&gt; initWithNibName:@'SecondViewController' 
+&gt; bundle:nil];
+&gt;     second.delegate = self;
+&gt;         second.flag = 0;
+&gt; 
+&gt; [self presentViewController:second animated:YES
+&gt; completion:nil];
+&gt; 
+&gt; }
+</code></pre>
 <h4 id="情况2：A页面跳转到B页面，B页面再跳转回A页面">情况2：A页面跳转到B页面，B页面再跳转回A页面</h4><h4 id="主流方法：">主流方法：</h4><p>(1) 通过委托delegate的方式实现</p>
 <p><img src="/Users/jianghongyu/Desktop/blog/页面传值图片/屏幕快照 2015-10-11 下午9.54.01.png" alt="alt text">设置协议及方法</p>
 <pre><code><span class="comment">// SecondViewController.h</span>
