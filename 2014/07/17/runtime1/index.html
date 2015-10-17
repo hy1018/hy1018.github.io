@@ -1,0 +1,490 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>runtime学习 | Seven’s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="姜宏宇">
+    
+    <meta name="description" content="通过对runtime的初步学习，知道了runtime是想要学好iOS开发，或者说是真正的深刻的掌握OC这门语言所必须理解的东西。
+什么是Runtime我们写的代码在程序运行过程中都会被转化成runtime的C代码执行，例如[target doSomething];会被转化成objc_msgSend(">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Seven’s blog" title="Seven’s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Seven’s blog">Seven’s blog</a></h1>
+				<h2 class="blog-motto">Walk steps step to step</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/07/17/runtime1/" title="runtime学习" itemprop="url">runtime学习</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="姜宏宇">姜宏宇</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-07-16T16:56:39.000Z" itemprop="datePublished">2014-07-17</time>
+    更新日期:<time datetime="2015-10-17T09:29:45.000Z" itemprop="dateModified">2015-10-17</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是Runtime"><span class="toc-number">1.</span> <span class="toc-text">什么是Runtime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取列表"><span class="toc-number">2.</span> <span class="toc-text">获取列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法调用"><span class="toc-number">3.</span> <span class="toc-text">方法调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#拦截调用"><span class="toc-number">4.</span> <span class="toc-text">拦截调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态添加方法"><span class="toc-number">5.</span> <span class="toc-text">动态添加方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关联对象"><span class="toc-number">6.</span> <span class="toc-text">关联对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法交换"><span class="toc-number">7.</span> <span class="toc-text">方法交换</span></a></li></ol>
+		</div>
+		
+		<p>通过对runtime的初步学习，知道了runtime是想要学好iOS开发，或者说是真正的深刻的掌握OC这门语言所必须理解的东西。</p>
+<h3 id="什么是Runtime">什么是Runtime</h3><p>我们写的代码在程序运行过程中都会被转化成runtime的C代码执行，例如[target doSomething];会被转化成objc_msgSend(target, @selector(doSomething));。</p>
+<p>OC中一切都被设计成了对象，我们都知道一个类被初始化成一个实例，这个实例是一个对象。实际上一个类本质上也是一个对象，在runtime中用结构体表示。</p>
+<p>相关的定义：</p>
+<pre><code><span class="comment">// 描述类中的一个方法</span>
+typedef struct objc_method *<span class="function"><span class="keyword">Method</span>;</span>
+<span class="comment">// 实例变量</span>
+typedef struct objc_ivar *Ivar;
+<span class="comment">// 类别Category</span>
+typedef struct objc_category *Category;
+<span class="comment">// 类中声明的属性</span>
+typedef struct objc_property *objc_property_t;
+</code></pre><p>类在runtime中的表示</p>
+<pre><code><span class="comment">// 类在runtime中的表示</span>
+<span class="keyword">struct</span> objc_class {
+    Class isa;<span class="comment">// 指针，顾名思义，表示是一个什么，</span>
+    <span class="comment">// 实例的isa指向类对象，类对象的isa指向元类</span>
+<span class="preprocessor">#<span class="keyword">if</span> !_OBJC2_</span>
+    Class super_class;  <span class="comment">// 指向父类</span>
+    <span class="keyword">const</span> <span class="keyword">char</span> *name;   <span class="comment">// 类名</span>
+    <span class="keyword">long</span> version;
+    <span class="keyword">long</span> info;
+    <span class="keyword">long</span> instance_size
+    <span class="keyword">struct</span> objc_ivar_list *ivars <span class="comment">// 成员变量列表</span>
+    <span class="keyword">struct</span> objc_method_list **methodLists; <span class="comment">// 方法列表</span>
+    <span class="keyword">struct</span> objc_cache *cache; <span class="comment">// 缓存</span>
+    <span class="comment">// 一种优化，调用过的方法存入缓存列表，下次调用先找缓存</span>
+    <span class="keyword">struct</span> objc_protocol_list *protocols <span class="comment">// 协议列表</span>
+    <span class="preprocessor">#<span class="keyword">endif</span></span>
+} OBJC2_UNAVAILABLE;
+<span class="comment">/* Use `Class` instead of `struct objc_class *` */</span>
+</code></pre><h3 id="获取列表">获取列表</h3><p>有时候会有这样的需求，我们需要知道当前类中每个属性的名字（比如字典转模型，字典的Key和模型对象的属性名字不匹配）。</p>
+<p>我们可以通过runtime的一系列方法获取类的一些信息（包括属性列表，方法列表，成员变量列表，和遵循的协议列表）。</p>
+<pre><code>unsigned <span class="type">int</span> count;
+  // 获取属性列表
+  objc_property_t *propertyList = class_copyPropertyList([self class], &amp;count);
+  <span class="keyword">for</span> (unsigned <span class="type">int</span> i = <span class="number">0</span>; i &lt; count; i++) {
+    <span class="keyword">const</span> <span class="type">char</span> *propertyname = <span class="string">" property_getName(propertyList[i]);"</span>
+    nslog(@<span class="string">"property----="</span><span class="string">"&gt;%@"</span>, [<span class="type">NSString</span> stringWithUTF8String:propertyName]);
+  }
+  // 获取方法列表
+  <span class="type">Method</span> *methodList = class_copyMethodList([self class], &amp;count);
+  <span class="keyword">for</span> (unsigned <span class="type">int</span> i; i &lt; count; i++) {
+    <span class="keyword">method</span> <span class="keyword">method</span> = <span class="string">" methodList[i];"</span> 
+    nslog(@<span class="string">"method----="</span><span class="string">"&gt;%@"</span>, <span class="type">NSStringFromSelector</span>(method_getName(<span class="keyword">method</span>)));
+  }
+  // 获取成员变量列表
+  <span class="type">Ivar</span> *ivarList = class_copyIvarList([self class], &amp;count);
+  <span class="keyword">for</span> (unsigned <span class="type">int</span> i; i &lt; count; i++) {
+    ivar myivar = <span class="string">"ivarList[i];"</span>
+    <span class="keyword">const</span> <span class="type">char</span> *ivarname = <span class="string">"ivar_getName(myIvar);"</span>
+    nslog(@<span class="string">"ivar----="</span><span class="string">"&gt;%@"</span>, [<span class="type">NSString</span> stringWithUTF8String:ivarName]);
+  }
+  // 获取协议列表
+  _unsafe_unretained <span class="type">Protocol</span> **protocolList = class_copyProtocolList([self class], &amp;count);
+  <span class="keyword">for</span> (unsigned <span class="type">int</span> i; i &lt; count; i++) {
+    protocol *myprotocal = <span class="string">" protpcolList[i];"</span>
+    <span class="keyword">const</span> <span class="type">char</span> *protocolname = <span class="string">" protocol_getName(myProtocal);"</span>
+    nslog(@<span class="string">"protocol----="</span><span class="string">"&gt;%@"</span>, [<span class="type">NSString</span> stringWithUTF8String:protocolName]);
+  }&lt;/count;i++) {&gt;&lt;/count; i++) {&gt;&lt;/count; i++) {&gt;&lt;/count; i++) {&gt;
+</code></pre><p>在Xcode上跑一下就能看到输出，需要给你当前的类写几个属性，成员变量，方法和协议，不然获取的列表是没有东西的。</p>
+<p>注意，调用这些获取列表的方法别忘记导入头文件#import。</p>
+<h3 id="方法调用">方法调用</h3><p>让我们看一下方法调用在运行时的过程（参考前文类在runtime中的表示）</p>
+<p><strong>如果用实例对象调用实例方法，会到实例的isa指针指向的对象（也就是类对象）操作。</strong></p>
+<p><strong>如果调用的是类方法，就会到类对象的isa指针指向的对象（也就是元类对象）中操作。</strong></p>
+<p>1.首先，在相应操作的对象中的缓存方法列表中找调用的方法，如果找到，转向相应实现并执行。</p>
+<p>2.如果没找到，在相应操作的对象中的方法列表中找调用的方法，如果找到，转向相应实现执行</p>
+<p>3.如果没找到，去父类指针所指向的对象中执行1，2.</p>
+<p>4.以此类推，如果一直到根类还没找到，转向拦截调用。</p>
+<p>5.如果没有重写拦截调用的方法，程序报错。</p>
+<p><strong>以上的过程给我带来的启发：</strong></p>
+<ul>
+<li>重写父类的方法，并没有覆盖掉父类的方法，只是在当前类对象中找到了这个方法后就不会再去父类中找了。</li>
+<li>如果想调用已经重写过的方法的父类的实现，只需使用super这个编译器标识，它会在运行时跳过在当前的类对象中寻找方法的过程。</li>
+</ul>
+<h3 id="拦截调用">拦截调用</h3><p>在方法调用中说到了,如果没有找到方法就会转向拦截调用。</p>
+<p>那么什么是拦截调用呢。</p>
+<p>拦截调用就是，在找不到调用的方法程序崩溃之前，你有机会通过重写NSObject的四个方法来处理。</p>
+<pre><code>+ (BOOL)<span class="string">resolveClassMethod:</span>(SEL)sel;
++ (BOOL)<span class="string">resolveInstanceMethod:</span>(SEL)sel;
+<span class="comment">// 后两个方法需要转发到其他的类处理</span>
+- (id)<span class="string">forwardingTargetForSelector:</span>(SEL)aSelector;
+- (<span class="typename">void</span>)<span class="string">forwardInvocation:</span>(NSInvocation *)anInvocation;
+</code></pre><ul>
+<li>第一个方法是当你调用一个不存在的类方法的时候，会调用这个方法，默认返回NO，你可以加上自己的处理然后返回YES。</li>
+<li>第二个方法和第一个方法相似，只不过处理的是实例方法。</li>
+<li>第三个方法是将你调用的不存在的方法重定向到一个其他声明了这个方法的类，只需要你返回一个有这个方法的target;</li>
+<li>第四个方法是将你调用的不存在的方法打包成NSInvocation传给你。做完你自己的处理后，调用invokeWithTarget:方法让某个target触发这个方法。</li>
+</ul>
+<h3 id="动态添加方法">动态添加方法</h3><p>重写了拦截调用的方法并且返回了YES，我们要怎么处理呢？</p>
+<p>有一个办法是根据传进来的SEL类型的selector动态添加一个方法。</p>
+<p>首先从外部隐式调用一个不存在的方法：</p>
+<pre><code><span class="comment">// 隐式调用方法</span>
+[target <span class="string">performSelector:</span><span class="annotation">@selector</span>(<span class="string">resolveAdd:</span>) <span class="string">withObject:</span>@<span class="string">"test"</span>];
+</code></pre><p>然后，在target对象内部重写拦截调用的方法，动态添加方法。</p>
+<pre><code><span class="keyword">void</span> runAddMethod(<span class="keyword">id</span> <span class="keyword">self</span>, SEL _cmd, <span class="built_in">NSString</span> *string){
+<span class="built_in">NSLog</span>(<span class="string">@"add C IMP "</span>, string);
+}
++ (<span class="built_in">BOOL</span>)resolveInstanceMethod:(SEL)sel{
+    <span class="comment">// 给本类动态添加一个方法</span>
+    <span class="keyword">if</span> ([<span class="built_in">NSStringFromSelector</span>(sel) isEqualToString:<span class="string">@"resolveAdd:"</span>]) {
+        class_addMethod(<span class="keyword">self</span>, sel, (IMP)runAddMethod, <span class="string">"v@:*"</span>);
+    }
+    <span class="keyword">return</span> <span class="literal">YES</span>;
+}
+</code></pre><p>其中class_addMethod的四个参数分别是：</p>
+<p>1.Class cls给哪个类添加方法，本例中是self。</p>
+<p>2.SEL name添加的方法，本例中是重写的拦截调用传进来的selector。</p>
+<p>3.IMP imp方法的实现，C方法的方法实现可以直接获得。如果是OC方法，可以用+(IMP)instanceMethodForSelector:(SEL)aSelector;获得方法的实现。</p>
+<p>4.”v@:*”方法的签名，代表有一个参数的方法。</p>
+<h3 id="关联对象">关联对象</h3><p>现在你准备用一个系统的类，但是系统的类并不能满足你的需求，你需要额外添加一个属性。</p>
+<p>这种情况的一般解决办法就是继承。</p>
+<p>但是，只增加一个属性，就去继承一个类，总是觉得太麻烦了。</p>
+<p>这个时候，runtime的关联属性就发挥它的作用了。</p>
+<pre><code><span class="comment">// 首先定义一个全局变量，用它的地址作为关联对象的key</span>
+<span class="keyword">static</span> <span class="keyword">char</span> associatedObjectKey;
+<span class="comment">// 设置关联对象</span>
+objc_setAssociatedObject(target, &amp;associatedObjectKey, <span class="string">@"添加的字符串属性"</span>, OBJC_ASSO<span class="built_in">CIATION_RETAIN_NONATOMIC</span>);<span class="comment">// 获取关联对象</span>
+<span class="built_in">NSString</span> *string = objc_getAssociatedObject(target, &amp;associatedObjectKey);
+<span class="built_in">NSLog</span>(<span class="string">@"AssociatedObject = %@"</span>, string);
+</code></pre><p>objc_setAssociatedObject的四个参数：</p>
+<p>1.id object给谁设置关联对象。</p>
+<p>2.const void *key关联对象唯一的key，获取时会用到。</p>
+<p>3.id value关联对象。</p>
+<p>4.objc_AssociationPolicy关联策略，有以下几种策略：</p>
+<pre><code><span class="class"><span class="keyword">enum</span> {</span>
+    <span class="constant">OBJC_ASSOCIATION_ASSIGN</span> = <span class="number">0</span>,
+    <span class="constant">OBJC_ASSOCIATION_RETAIN_NONATOMIC</span> = <span class="number">1</span>,
+    <span class="constant">OBJC_ASSOCIATION_COPY_NONATOMIC</span> = <span class="number">3</span>,
+    <span class="constant">OBJC_ASSOCIATION_RETAIN</span> = <span class="number">01401</span>,
+    <span class="constant">OBJC_ASSOCIATION_COPY</span> = <span class="number">01403</span>
+};
+</code></pre><p>如果你熟悉OC，看名字应该知道这几种策略的意思了吧。</p>
+<p>1.objc_getAssociatedObject的两个参数。</p>
+<p>2.id object获取谁的关联对象。</p>
+<p>const void *key根据这个唯一的key获取关联对象。</p>
+<p>其实，你还可以把添加和获取关联对象的方法写在你需要用到这个功能的类的类别中，方便使用。</p>
+<pre><code><span class="comment">// 添加关联对象</span>
+- (<span class="keyword">void</span>)addAssociatedObject:(<span class="keyword">id</span>)object{
+    objc_setAssociatedObject(<span class="keyword">self</span>, <span class="keyword">@selector</span>(getAssociatedObject), object, OBJC_ASSO<span class="built_in">CIATION_RETAIN_NONATOMIC</span>);
+}
+<span class="comment">// 获取关联对象</span>
+- (<span class="keyword">id</span>)getAssociatedObject{
+    <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, _cmd);
+}
+</code></pre><p>注意：这里面我们把getAssociatedObject方法的地址作为唯一的key, _cmd代表当前调用方法的地址。</p>
+<h3 id="方法交换">方法交换</h3><p>方法交换，顾名思义，就是将两个方法的实现交换。例如，将A方法和B方法交换，调用A方法的时候，就会执行B方法中的代码，反之亦然。</p>
+<p>下面是参考Mattt大神在NSHipster上的文章自己写的代码。</p>
+<pre><code><span class="preprocessor">#import <span class="title">"UIViewController+swizzling.h"</span></span>
+<span class="preprocessor">#import @implementation UIViewController (swizzling)</span>
+<span class="comment">//load方法会在类第一次加载的时候被调用</span>
+<span class="comment">//调用的时间比较靠前，适合在这个方法里做方法交换</span>
++ (<span class="keyword">void</span>)load {
+    <span class="comment">//方法交换应该被保证，在程序中只会执行一次</span>
+    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;
+    <span class="built_in">dispatch_once</span>(&amp;onceToken, ^{
+        <span class="comment">//获得viewController的生命周期方法的selector</span>
+        SEL systemSel = <span class="keyword">@selector</span>(viewWillAppear:);
+        <span class="comment">//自己实现的将要被交换的方法的selector</span>
+        SEL swizzSel = <span class="keyword">@selector</span>(swiz_viewWillAppear:);
+        <span class="comment">//两个方法的Method</span>
+        Method systemMethod = class_getInstanceMethod([<span class="keyword">self</span> class], systemSel);
+        Method swizzMethod = class_getInstanceMethod([<span class="keyword">self</span> class], swizzSel);
+        <span class="comment">//首先动态添加方法，实现是被交换的方法，返回值表示添加成功还是失败</span>
+        <span class="built_in">BOOL</span> isAdd = class_addMethod(<span class="keyword">self</span>, systemSel, method_getImplementation(swizzMethod), method_getTypeEncoding(swizzMethod));
+        <span class="keyword">if</span> (isAdd) {
+        <span class="comment">//如果成功，说明类中不存在这个方法的实现</span>
+        <span class="comment">//将被交换方法的实现替换到这个并不存在的实现</span>
+        class_replaceMethod(<span class="keyword">self</span>, swizzSel, method_getImplementation(systemMethod), method_getTypeEncoding(systemMethod));
+        }<span class="keyword">else</span>{
+            <span class="comment">//否则，交换两个方法的实现</span>
+             method_exchangeImplementations(systemMethod, swizzMethod);
+        }
+    });    
+}
+- (<span class="keyword">void</span>)swiz_viewWillAppear:(<span class="built_in">BOOL</span>)animated{
+    <span class="comment">//这时候调用自己，看起来像是死循环</span>
+    <span class="comment">//但是其实自己的实现已经被替换了</span>
+    [<span class="keyword">self</span> swiz_viewWillAppear:animated];
+    <span class="built_in">NSLog</span>(<span class="string">@"swizzle"</span>);
+}
+<span class="keyword">@end</span>
+</code></pre><p>在一个自己定义的viewController中重写viewWillAppear</p>
+<pre><code>- (<span class="typename">void</span>)<span class="string">viewWillAppear:</span>(BOOL)animated {
+    [<span class="keyword">super</span> <span class="string">viewWillAppear:</span>animated];
+    NSLog(@<span class="string">"viewWillAppear"</span>);
+}
+</code></pre><p>让程序跑起来看看输出吧！</p>
+<p>理解：</p>
+<ul>
+<li>方法交换更像是实现一种思想的最佳技术：AOP面向切面编程。</li>
+<li>既然是切面，就一定不要忘记，交换完再调回自己。</li>
+<li>一定要保证只交换一次，否则就会很乱。</li>
+<li>最后，据说这个技术很危险，谨慎使用。</li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/OC/">OC</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2014/07/17/runtime1/" data-title="runtime学习 | Seven’s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/05/20/ios-chuanzhi/"  title="iOS页面间传值">
+ <strong>NEXT:</strong><br/> 
+ <span>iOS页面间传值
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是Runtime"><span class="toc-number">1.</span> <span class="toc-text">什么是Runtime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取列表"><span class="toc-number">2.</span> <span class="toc-text">获取列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法调用"><span class="toc-number">3.</span> <span class="toc-text">方法调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#拦截调用"><span class="toc-number">4.</span> <span class="toc-text">拦截调用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态添加方法"><span class="toc-number">5.</span> <span class="toc-text">动态添加方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关联对象"><span class="toc-number">6.</span> <span class="toc-text">关联对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法交换"><span class="toc-number">7.</span> <span class="toc-text">方法交换</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/OC/" title="OC">OC<sup>1</sup></a></li>
+		
+			<li><a href="/categories/iOS/" title="iOS">iOS<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://yoursite.com" target="_blank" title="姜宏宇">姜宏宇</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+  </body>
+</html>
