@@ -1,0 +1,778 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+    <meta name="description" content="Walk steps step to step" />
+
+
+
+  <meta name="keywords" content="Hexo,next" />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description" content="首先来说下AFNetworking一、两大管理对象1.AFHTTPRequestOperationManager对NSURLConnection的封装
+2.AFHTTPSessionManager对NSURLSession的封装
+二、AFHTTPRequestOperationManager的具体作用1.创建管理者
+AFHTTPRequestOperationManager *mgr = [AFH">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对AFN和ASI学习总结">
+<meta property="og:url" content="http://jianghongyublog.com/post/学习ASI和AFN总结/index.html">
+<meta property="og:site_name" content="Mr.Dog">
+<meta property="og:description" content="首先来说下AFNetworking一、两大管理对象1.AFHTTPRequestOperationManager对NSURLConnection的封装
+2.AFHTTPSessionManager对NSURLSession的封装
+二、AFHTTPRequestOperationManager的具体作用1.创建管理者
+AFHTTPRequestOperationManager *mgr = [AFH">
+<meta property="og:updated_time" content="2015-10-21T17:11:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对AFN和ASI学习总结">
+<meta name="twitter:description" content="首先来说下AFNetworking一、两大管理对象1.AFHTTPRequestOperationManager对NSURLConnection的封装
+2.AFHTTPSessionManager对NSURLSession的封装
+二、AFHTTPRequestOperationManager的具体作用1.创建管理者
+AFHTTPRequestOperationManager *mgr = [AFH">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> 对AFN和ASI学习总结 | Mr.Dog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">Mr.Dog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            <i class="menu-item-icon icon-next-categories"></i> <br />
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              对AFN和ASI学习总结
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-10-20T13:34:52+08:00" content="2015-10-20">
+            2015-10-20
+          </time>
+        </span>
+
+        
+          <span class="post-category" >
+            &nbsp; | &nbsp; 分类于
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/网络请求/" itemprop="url" rel="index">
+                  <span itemprop="name">网络请求</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h3 id="首先来说下AFNetworking">首先来说下AFNetworking</h3><h4 id="一、两大管理对象">一、两大管理对象</h4><p>1.<code>AFHTTPRequestOperationManager</code>对<code>NSURLConnection</code>的封装</p>
+<p>2.<code>AFHTTPSessionManager</code>对<code>NSURLSession</code>的封装</p>
+<h4 id="二、AFHTTPRequestOperationManager的具体作用">二、<code>AFHTTPRequestOperationManager</code>的具体作用</h4><p>1.创建管理者</p>
+<pre><code>AFHTTPRequestOperationManager *mgr = <span class="string">[AFHTTPRequestOperationManager manager]</span>;
+</code></pre><p>2.封装请求参数</p>
+<pre><code>NSMutableDictionary *<span class="keyword">params</span> = [NSMutableDictionary dictionary];
+<span class="keyword">params</span>[<span class="string">@"username"</span>] = <span class="string">@"哈哈"</span>;
+<span class="keyword">params</span>[<span class="string">@"pwd"</span>] = <span class="string">@"123"</span>;
+</code></pre><p>3.发送请求</p>
+<pre><code><span class="built_in">NSString</span> *url = <span class="string">@"http://localhost:8080/LWServer/login"</span>;
+[mgr POST:url parameters:params
+  success:^(AFHTTPRequestOperation \*operation, <span class="keyword">id</span> responseObject) {
+      <span class="comment">// 请求成功的时候调用这个block</span>
+      <span class="built_in">NSLog</span>(<span class="string">@"请求成功---%@"</span>, responseObject);
+  } failure:^(AFHTTPRequestOperation \*operation, <span class="built_in">NSError</span> *error) {
+      <span class="comment">// 请求失败的时候调用调用这个block</span>
+      <span class="built_in">NSLog</span>(<span class="string">@"请求失败"</span>);
+  }];
+ <span class="comment">// GET请求</span>
+ [mgr GET:url parameters:params
+   success:^(AFHTTPRequestOperation \*operation, <span class="keyword">id</span> responseObject) {
+       <span class="comment">// 请求成功的时候调用这个block</span>
+       <span class="built_in">NSLog</span>(<span class="string">@"请求成功---%@"</span>, responseObject);
+   } failure:^(AFHTTPRequestOperation \*operation, <span class="built_in">NSError</span> *error) {
+       <span class="comment">// 请求失败的时候调用调用这个block</span>
+       <span class="built_in">NSLog</span>(<span class="string">@"请求失败"</span>);
+   }];
+</code></pre><h4 id="三、对服务器返回数据的解析">三、对服务器返回数据的解析</h4><p>1.AFN可以自动对服务器返回的数据进行解析</p>
+<p>默认将服务器返回的数据当做JSON来解析</p>
+<p>2.设置对服务器返回数据的解析方式</p>
+<p>(1) 当做是JSON来解析(默认做法)</p>
+<p><code>mgr.responseSerializer = [AFJSONResponseSerializer serializer];</code></p>
+<p><code>responseObject</code>的类型是<code>NSDictionary</code>或者<code>NSArray</code></p>
+<p>(2) 当做是XML来解析</p>
+<p><code>mgr.responseSerializer = [AFXMLParserResponseSerializer serializer];</code></p>
+<p><code>responseObject</code>的类型是<code>NSXMLParser</code></p>
+<p>(3) 直接返回data</p>
+<p>意思是：告诉AFN不要去解析服务器返回的数据，保持原来的data即可</p>
+<p><code>mgr.responseSerializer = [AFHTTPResponseSerializer serializer];</code></p>
+<p>3.注意</p>
+<p>服务器返回的数据一定要跟responseSerializer对得上</p>
+<p>(1) 服务器返回的是JSON数据</p>
+<p><code>AFJSONResponseSerializer</code></p>
+<p><code>AFHTTPResponseSerializer</code></p>
+<p>(2) 服务器返回的是XML数据</p>
+<p><code>AFXMLParserResponseSerializer</code></p>
+<p><code>AFHTTPResponseSerializer</code></p>
+<p>(3) 服务器返回的是其他数据</p>
+<p><code>AFHTTPResponseSerializer</code></p>
+<h3 id="接下来说一下ASIHttpRequest：">接下来说一下ASIHttpRequest：</h3><h4 id="一、发送请求的两个对象">一、发送请求的两个对象</h4><p>1.发送GET请求：<code>ASIHttpRequest</code></p>
+<p>2.发送POST请求：<code>ASIFormDataRequest</code></p>
+<p>设置参数</p>
+<pre><code><span class="comment">// 同一个key只对应1个参数值，适用于普通“单值参数”</span>
+- (<span class="keyword">void</span>)setPostValue:(<span class="keyword">id</span> &lt;<span class="built_in">NSObject</span>&gt;)value forKey:(<span class="built_in">NSString</span> \*)key
+<span class="comment">// 同一个key（同一个参数名），会对应多个参数值，适用于“多值参数”</span>
+- (<span class="keyword">void</span>)addPostValue:(<span class="keyword">id</span> &lt;<span class="built_in">NSObject</span>&gt;)value forKey:(<span class="built_in">NSString</span> \*)key
+</code></pre><h4 id="二、发送请求">二、发送请求</h4><p>1.同步请求</p>
+<p><code>startSynchronous</code></p>
+<p>2.异步请求</p>
+<p><code>startAsynchronous</code></p>
+<h4 id="三、监听请求的过程">三、监听请求的过程</h4><p>1.如何监听请求过程</p>
+<p>(1) 为代理，遵守<code>&lt;ASIHTTPRequestDelegate&gt;</code>协议，实现协议中的代理方法</p>
+<pre><code>request.delegate = self;
+<span class="pp">- <span class="params">(void)</span>requestStarted:<span class="params">(<span class="variable">ASIHTTPRequest</span> *)</span>request;
+- <span class="params">(void)</span>request:<span class="params">(<span class="variable">ASIHTTPRequest</span> *)</span>request didReceiveResponseHeaders:<span class="params">(<span class="variable">NSDictionary</span> *)</span>responseHeaders;
+- <span class="params">(void)</span>request:<span class="params">(<span class="variable">ASIHTTPRequest</span> *)</span>request didReceiveData:<span class="params">(<span class="variable">NSData</span> *)</span>data;
+- <span class="params">(void)</span>requestFinished:<span class="params">(<span class="variable">ASIHTTPRequest</span> *)</span>request;
+- <span class="params">(void)</span>requestFailed:<span class="params">(<span class="variable">ASIHTTPRequest</span> *)</span>request;</span>
+</code></pre><p>(2) 成为代理，不遵守<code>&lt;ASIHTTPRequestDelegate&gt;</code>协议，自定义代理方法</p>
+<pre><code>request.delegate = self;
+[request <span class="string">setDidStartSelector:</span><span class="annotation">@selector</span>(<span class="string">start:</span>)];
+[request <span class="string">setDidFinishSelector:</span><span class="annotation">@selector</span>(<span class="string">finish:</span>)];
+</code></pre><p>(3) 设置block</p>
+<pre><code><span class="list">[<span class="keyword">request</span> setStartedBlock:^{
+    NSLog<span class="list">(<span class="keyword">@</span><span class="string">"setStartedBlock"</span>)</span><span class="comment">;</span>
+}]<span class="comment">;</span>
+<span class="list">[<span class="keyword">request</span> setHeadersReceivedBlock:^<span class="list">(<span class="keyword">NSDictionary</span> *responseHeaders)</span> {
+    NSLog<span class="list">(<span class="keyword">@</span><span class="string">"setHeadersReceivedBlock--%@"</span>, responseHeaders)</span><span class="comment">;</span>
+}]<span class="comment">;</span>
+<span class="list">[<span class="keyword">request</span> setDataReceivedBlock:^<span class="list">(<span class="keyword">NSData</span> *data)</span> {
+    NSLog<span class="list">(<span class="keyword">@</span><span class="string">"setDataReceivedBlock--%@"</span>, data)</span><span class="comment">;</span>
+}]<span class="comment">;</span>
+<span class="list">[<span class="keyword">request</span> setCompletionBlock:^{
+    NSLog<span class="list">(<span class="keyword">@</span><span class="string">"setCompletionBlock"</span>)</span><span class="comment">;</span>
+}]<span class="comment">;</span>
+<span class="list">[<span class="keyword">request</span> setFailedBlock:^{
+    NSLog<span class="list">(<span class="keyword">@</span><span class="string">"setFailedBlock"</span>)</span><span class="comment">;</span>
+}]<span class="comment">;</span></span></span></span></span></span>
+</code></pre><p>2.监听的使用注意</p>
+<ul>
+<li>如果同时设置了block和实现了代理方法，请求过程中，block和代理方法都会调用</li>
+<li>一般的调用顺序：代理方法 &gt; block</li>
+</ul>
+<p>3.如果实现了下面的代理方法，<code>那么responseData\responseString</code>就没有值</p>
+<pre><code><span class="tag">-</span> (<span class="tag">void</span>)<span class="rule"><span class="attribute">request</span>:<span class="value">(ASIHTTPRequest *)request didReceiveData:(NSData *)data</span></span>;
+</code></pre><h4 id="四、文件下载">四、文件下载</h4><p>1.一般的下载</p>
+<p>(1) 设置文件下载的保存路径</p>
+<pre><code>request.downloadDestinationPath = filepath<span class="comment">;</span>
+</code></pre><p>(2) 设置进度监听的代理(要想成为进度监听代理，最好遵守<code>&lt;ASIProgressDelegate&gt;</code>协议)</p>
+<pre><code>request.downloadProgressDelegate = <span class="keyword">self</span>.progressView;
+</code></pre><p>2.断点下载（断电续传）</p>
+<p>(1) 设置文件下载的临时路径</p>
+<pre><code>request.temporaryFileDownloadPath = tempFilepath<span class="comment">;</span>
+</code></pre><p>(2) 设置支持断点续传</p>
+<pre><code>request.allowResumeForFileDownloads = YES<span class="comment">;</span>
+</code></pre><h4 id="五、文件上传（设置文件参数）">五、文件上传（设置文件参数）</h4><p>1.如果知道文件路径，最好就用这个方法（因为简单）</p>
+<pre><code><span class="comment">// ASI内部会自动识别文件的MIMEType</span>
+[request <span class="string">setFile:</span>file <span class="string">forKey:</span>@<span class="string">"file"</span>];
+[request <span class="string">addFile:</span>file <span class="string">forKey:</span>@<span class="string">"file"</span>];
+[request <span class="string">setFile:</span>file <span class="string">withFileName:</span>@<span class="string">"basic.pptx"</span> <span class="string">andContentType:</span>@<span class="string">"application/vnd.openxmlformats-officedocument.presentationml.presentation"</span> <span class="string">forKey:</span>@<span class="string">"file"</span>];
+<span class="comment">// .....</span>
+</code></pre><p>2.如果文件数据是动态产生的，就用这个方法（比如刚拍照完获得的图片数据）</p>
+<pre><code>[request <span class="string">setData:</span>data <span class="string">withFileName:</span>@<span class="string">"test.png"</span> <span class="string">andContentType:</span>@<span class="string">"image/png"</span> <span class="string">forKey:</span>@<span class="string">"file"</span>];
+</code></pre><h4 id="六、ASIHttpRequest的常见用法">六、ASIHttpRequest的常见用法</h4><p>1.请求超时</p>
+<pre><code><span class="keyword">@property</span> (atomic, <span class="keyword">assign</span>) <span class="built_in">NSTimeInterval</span> timeOutSeconds;
+</code></pre><p>2.获得错误信息</p>
+<pre><code>@<span class="keyword">property</span> (atomic, retain) NSError *<span class="keyword">error</span>;
+</code></pre><p>3.获得响应数据</p>
+<pre><code><span class="comment">// 状态码</span>
+<span class="keyword">@property</span> (atomic, <span class="keyword">assign</span>,<span class="keyword">readonly</span>) <span class="keyword">int</span> responseStatusCode;
+<span class="comment">// 状态信息</span>
+<span class="keyword">@property</span> (atomic, retain,<span class="keyword">readonly</span>) <span class="built_in">NSString</span> *responseStatusMessage;
+<span class="comment">// 服务器返回的具体数据（NSString格式）</span>
+- (<span class="built_in">NSString</span> *)responseString;
+<span class="comment">// 服务器返回的具体数据（NSData格式）</span>
+- (<span class="built_in">NSData</span> *)responseData;
+</code></pre><h3 id="最后是重点内容，也是面试时经常会问的问题，两者的区别：">最后是重点内容，也是面试时经常会问的问题，两者的区别：</h3><h4 id="一、底层实现">一、底层实现</h4><p>(1) AFN的底层基于OC的<code>NSURLConnection</code>和<code>NSURLSession</code></p>
+<p>(2) ASI的底层基于纯C语言的<code>CFNetwork</code>框架</p>
+<p>(3) ASI的运行性能高于AFN</p>
+<h4 id="二、对服务器返回的数据处理">二、对服务器返回的数据处理</h4><p>(1) ASI没有直接提供对服务器数据处理的方式，直接返回data\string</p>
+<p>(2) AFN提供了多种对服务器数据处理的方式</p>
+<ul>
+<li>JSON处理</li>
+<li>XML处理</li>
+<li>其他处理</li>
+</ul>
+<h4 id="三、监听请求的过程-1">三、监听请求的过程</h4><p>(1) AFN提供了<code>success</code>和<code>failure</code>两个block来监听请求的过程（只能监听成功和失败）</p>
+<ul>
+<li><code>success</code>：请求成功后调用</li>
+<li><code>failure</code>：请求失败后调用</li>
+</ul>
+<p>(2) ASI提供了3套方案，每一套方案都能监听请求的完整过程（监听请求开始、接收到响应头信息、接受到具体数据、接受完毕、请求失败）</p>
+<ul>
+<li>成为代理，遵守协议，实现协议中的代理方法</li>
+<li>成为代理，不遵守协议，自定义代理方法</li>
+<li>设置block</li>
+</ul>
+<h4 id="四、在文件下载和文件上传的使用难易度">四、在文件下载和文件上传的使用难易度</h4><p>(1) AFN</p>
+<ul>
+<li>不容易监听下载进度和上传进度</li>
+<li>不容易实现断点续传</li>
+<li>一般只用来下载不大的文件</li>
+</ul>
+<p>(2) ASI</p>
+<ul>
+<li>非常容易实现下载和上传</li>
+<li>非常容易监听下载进度和上传进度</li>
+<li>非常容易实现断点续传</li>
+<li>下载或大或小的文件都行</li>
+</ul>
+<h4 id="五、ASI提供了更多的使用功能">五、ASI提供了更多的使用功能</h4><p>(1) 控制圈圈要不要在请求过程中转</p>
+<p>(2) 可以轻松地设置请求之间的依赖：每一个请求都是一个<code>NSOperation</code>对象</p>
+<p>(3) 可以统一管理所有请求（还专门提供了一个叫做<code>ASINetworkQueue</code>来管理所有的请求对象）</p>
+<ul>
+<li>暂停\恢复\取消所有的请求</li>
+<li>监听整个队列中所有请求的下载进度和上传进度</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/runtime1/" rel="next">runtime学习</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="姜宏宇" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">姜宏宇</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">Walk steps step to step</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先来说下AFNetworking"><span class="nav-number">1.</span> <span class="nav-text">首先来说下AFNetworking</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、两大管理对象"><span class="nav-number">1.1.</span> <span class="nav-text">一、两大管理对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、AFHTTPRequestOperationManager的具体作用"><span class="nav-number">1.2.</span> <span class="nav-text">二、AFHTTPRequestOperationManager的具体作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、对服务器返回数据的解析"><span class="nav-number">1.3.</span> <span class="nav-text">三、对服务器返回数据的解析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接下来说一下ASIHttpRequest："><span class="nav-number">2.</span> <span class="nav-text">接下来说一下ASIHttpRequest：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、发送请求的两个对象"><span class="nav-number">2.1.</span> <span class="nav-text">一、发送请求的两个对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、发送请求"><span class="nav-number">2.2.</span> <span class="nav-text">二、发送请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、监听请求的过程"><span class="nav-number">2.3.</span> <span class="nav-text">三、监听请求的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、文件下载"><span class="nav-number">2.4.</span> <span class="nav-text">四、文件下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五、文件上传（设置文件参数）"><span class="nav-number">2.5.</span> <span class="nav-text">五、文件上传（设置文件参数）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#六、ASIHttpRequest的常见用法"><span class="nav-number">2.6.</span> <span class="nav-text">六、ASIHttpRequest的常见用法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后是重点内容，也是面试时经常会问的问题，两者的区别："><span class="nav-number">3.</span> <span class="nav-text">最后是重点内容，也是面试时经常会问的问题，两者的区别：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、底层实现"><span class="nav-number">3.1.</span> <span class="nav-text">一、底层实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、对服务器返回的数据处理"><span class="nav-number">3.2.</span> <span class="nav-text">二、对服务器返回的数据处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、监听请求的过程-1"><span class="nav-number">3.3.</span> <span class="nav-text">三、监听请求的过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、在文件下载和文件上传的使用难易度"><span class="nav-number">3.4.</span> <span class="nav-text">四、在文件下载和文件上传的使用难易度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五、ASI提供了更多的使用功能"><span class="nav-number">3.5.</span> <span class="nav-text">五、ASI提供了更多的使用功能</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp;  2013 - 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">姜宏宇</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<span id="busuanzi_container_site_pv">
+  本站访客数<span id="busuanzi_value_site_pv"></span>人次
+</span>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
